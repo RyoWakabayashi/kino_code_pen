@@ -38,6 +38,16 @@ defmodule KinoCodePen do
     Kino.JS.new(__MODULE__, iframe)
   end
 
+  def url(pen_url, opts \\ []) do
+    case Regex.named_captures(~r{codepen\.io/(?<username>[^/]+)/pen/(?<pen_id>[^/]+)}, pen_url) do
+      %{"username" => username, "pen_id" => pen_id} ->
+        new(username, pen_id, opts)
+
+      _ ->
+        Kino.JS.new(__MODULE__, "Invalid CodePen URL")
+    end
+  end
+
   asset "main.js" do
     """
     export function init(ctx, iframe) {
